@@ -1,0 +1,25 @@
+/* Gradienti e stili personalizzati CASCIA' CLUB — bianco / nero / azzurro */
+.brand-gradient {
+    background: linear-gradient(135deg, #1EA7E1 0%, #ffffff 100%);
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #1EA7E1 0%, #0C7FB0 100%);
+}
+
+.brand-text-gradient {
+    background: linear-gradient(135deg, #1EA7E1 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glass-panel {
+    background: rgba(21, 21, 25, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Scrollbar sottile per liste e gallerie */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #26262E; border-radius: 10px; }
+::-webkit-scrollbar-track { background: transparent; }

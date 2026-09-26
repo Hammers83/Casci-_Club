@@ -1,0 +1,20 @@
+{
+  "name": "Cascià Club",
+  "short_name": "CasciaClub",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0A0A0C",
+  "theme_color": "#1EA7E1",
+  "icons": [
+    {
+      "src": "assets/img/logo-cascia.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/img/logo-cascia.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

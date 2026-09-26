@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASCIA' CLUB | Pannello Direttivo</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { azzurro: '#1EA7E1', azzurroDark: '#0C7FB0', dark: '#0A0A0C', card: '#151519', border: '#26262E' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-brand-dark text-gray-100 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-40 glass-panel border-b border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="../assets/img/logo-cascia.png" alt="Logo Cascià Club" class="w-10 h-10 rounded-xl object-contain bg-white p-0.5">
+                <span class="text-xl font-black uppercase text-white">CASCIA' <span class="brand-text-gradient">CLUB</span></span>
+            </div>
+            <div id="nav-links" class="flex items-center space-x-3"></div>
+        </div>
+    </nav>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-8">
+
+        <div class="glass-panel p-6 rounded-3xl flex justify-between items-center border-l-4 border-l-brand-azzurro">
+            <div>
+                <h2 id="admin-welcome-title" class="text-2xl font-black uppercase text-white">Pannello Direttivo</h2>
+                <p class="text-xs text-gray-400">Gestione soci, eventi, riunioni e raduni del club</p>
+            </div>
+        </div>
+
+        <!-- EVENTI & RIUNIONI -->
+        <div class="glass-panel p-6 rounded-3xl space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-3 border-b border-brand-border pb-4">
+                <h3 class="text-lg font-black uppercase text-white flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-brand-azzurro"></i> Eventi &amp; Riunioni
+                </h3>
+                <button id="btn-open-create-modal" class="px-4 py-2.5 btn-gradient text-white font-black uppercase text-xs rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-sm"></i> Nuovo Evento
+                </button>
+            </div>
+            <div id="admin-events-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- ANAGRAFICA SOCI -->
+        <div class="glass-panel p-6 rounded-3xl">
+            <h3 class="text-lg font-black uppercase text-white mb-4">Anagrafica Soci</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-brand-border text-xs font-bold text-gray-400 uppercase">
+                            <th class="py-3 px-2">Foto</th>
+                            <th class="py-3 px-2">Socio</th>
+                            <th class="py-3 px-2">Contatti</th>
+                            <th class="py-3 px-2">Auto</th>
+                            <th class="py-3 px-2">Foto Auto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-members-body" class="divide-y divide-brand-border text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RADUNI -->
+        <div class="glass-panel p-6 rounded-3xl space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-3 border-b border-brand-border pb-4">
+                <h3 class="text-lg font-black uppercase text-white flex items-center gap-2">
+                    <i class="fa-solid fa-images text-brand-azzurro"></i> Raduni
+                </h3>
+                <button id="btn-open-create-raduno-modal" class="px-4 py-2.5 btn-gradient text-white font-black uppercase text-xs rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-sm"></i> Nuovo Raduno
+                </button>
+            </div>
+            <div id="admin-raduni-container" class="space-y-5"></div>
+        </div>
+
+        <!-- CHAT COMMUNITY & PRIVATA -->
+        <div class="glass-panel p-6 rounded-3xl space-y-4">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                <h3 class="text-lg font-black uppercase text-white flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-brand-azzurro"></i> Community &amp; Chat
+                </h3>
+                <select id="chat-type-select" class="bg-brand-dark border border-brand-border text-white text-xs rounded-xl p-2 font-bold focus:outline-none focus:border-brand-azzurro">
+                    <option value="group">📢 Chat di Gruppo</option>
+                    <option value="private">🔒 Messaggio Privato Socio</option>
+                </select>
+            </div>
+
+            <div id="member-selector-wrapper" class="hidden">
+                <label for="member-private-select" class="block text-xs font-bold text-gray-400 uppercase mb-1">Seleziona Socio:</label>
+                <select id="member-private-select" class="w-full bg-brand-dark border border-brand-border text-white text-xs rounded-xl p-2.5 font-bold focus:outline-none focus:border-brand-azzurro">
+                    <option value="">-- Seleziona un socio --</option>
+                </select>
+            </div>
+
+            <div id="chat-messages-container" class="h-64 overflow-y-auto space-y-3 p-3 bg-brand-dark/50 rounded-2xl border border-brand-border"></div>
+
+            <form id="chat-form" class="flex gap-2">
+                <label for="chat-input" class="sr-only">Scrivi un messaggio</label>
+                <input type="text" id="chat-input" placeholder="Scrivi un messaggio..." required autocomplete="off"
+                    class="flex-grow bg-brand-dark border border-brand-border rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-brand-azzurro">
+                <button type="submit" class="btn-gradient text-white font-black px-5 py-2.5 rounded-xl text-xs uppercase hover:opacity-90 transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="glass-panel p-6 rounded-3xl">
+                <h4 class="text-sm font-bold uppercase text-gray-300 mb-4">Partecipazione per Evento</h4>
+                <div class="relative h-64 w-full">
+                    <canvas id="chart-partecipazione"></canvas>
+                </div>
+            </div>
+            <div class="glass-panel p-6 rounded-3xl">
+                <h4 class="text-sm font-bold uppercase text-gray-300 mb-4">Auto per Categoria</h4>
+                <div class="relative h-64 w-full flex justify-center">
+                    <canvas id="chart-categorie-auto"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODALE NUOVO EVENTO -->
+    <div id="modal-create-event" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-card border border-brand-border p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                <h3 class="text-lg font-black uppercase text-white flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-plus text-brand-azzurro"></i> Nuovo Evento / Riunione
+                </h3>
+                <button id="btn-close-modal" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="form-create-event" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Tipo</label>
+                    <select id="event-type" class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                        <option value="evento">Evento</option>
+                        <option value="riunione">Riunione</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Titolo</label>
+                    <input type="text" id="event-title" placeholder="Es. Uscita fuoristrada in Valnerina" required
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Luogo</label>
+                    <input type="text" id="event-location" placeholder="Es. Sede del club"
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Data e Ora</label>
+                    <input type="datetime-local" id="event-datetime" required
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Posti Disponibili (0 = illimitati)</label>
+                    <input type="number" id="event-capacity" value="0" min="0" required
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Descrizione</label>
+                    <textarea id="event-description" rows="2" class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-modal" class="px-4 py-2.5 bg-brand-dark border border-brand-border text-gray-300 rounded-xl text-xs font-bold uppercase hover:bg-white/5 transition">Annulla</button>
+                    <button type="submit" class="px-5 py-2.5 btn-gradient text-white font-black uppercase text-xs rounded-xl shadow-lg hover:opacity-90 transition">Pubblica</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODALE MODIFICA EVENTO -->
+    <div id="modal-edit-event" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-card border border-brand-border p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                <h3 class="text-lg font-black uppercase text-white flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-brand-azzurro"></i> Modifica Evento
+                </h3>
+                <button id="btn-close-edit-modal" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="form-edit-event" class="space-y-4">
+                <input type="hidden" id="edit-event-id">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Tipo</label>
+                    <select id="edit-event-type" class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                        <option value="evento">Evento</option>
+                        <option value="riunione">Riunione</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Titolo</label>
+                    <input type="text" id="edit-event-title" required class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Luogo</label>
+                    <input type="text" id="edit-event-location" class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Data e Ora</label>
+                    <input type="datetime-local" id="edit-event-datetime" required class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Posti Disponibili (0 = illimitati)</label>
+                    <input type="number" id="edit-event-capacity" min="0" required class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Descrizione</label>
+                    <textarea id="edit-event-description" rows="2" class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-edit-modal" class="px-4 py-2.5 bg-brand-dark border border-brand-border text-gray-300 rounded-xl text-xs font-bold uppercase hover:bg-white/5 transition">Annulla</button>
+                    <button type="submit" class="px-5 py-2.5 bg-brand-azzurro text-black font-black uppercase text-xs rounded-xl shadow-lg hover:opacity-90 transition">Salva Modifiche</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODALE NUOVO RADUNO -->
+    <div id="modal-create-raduno" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-card border border-brand-border p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                <h3 class="text-lg font-black uppercase text-white flex items-center gap-2">
+                    <i class="fa-solid fa-flag-checkered text-brand-azzurro"></i> Nuovo Raduno
+                </h3>
+                <button id="btn-close-raduno-modal" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-create-raduno" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Titolo Raduno</label>
+                    <input type="text" id="raduno-title" placeholder="Es. Raduno Auto d'Epoca 2026" required
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Data</label>
+                    <input type="date" id="raduno-date" required
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Descrizione</label>
+                    <textarea id="raduno-description" rows="2" class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Link Cartella Google Drive (album completo, opzionale)</label>
+                    <input type="url" id="raduno-drive-link" placeholder="https://drive.google.com/drive/folders/..."
+                        class="w-full px-4 py-3 bg-brand-dark border border-brand-border rounded-xl text-white text-sm focus:outline-none focus:border-brand-azzurro">
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-raduno-modal" class="px-4 py-2.5 bg-brand-dark border border-brand-border text-gray-300 rounded-xl text-xs font-bold uppercase hover:bg-white/5 transition">Annulla</button>
+                    <button type="submit" class="px-5 py-2.5 btn-gradient text-white font-black uppercase text-xs rounded-xl shadow-lg hover:opacity-90 transition">Crea Raduno</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT APPLICATION LOGIC -->
+    <script src="../js/config.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
