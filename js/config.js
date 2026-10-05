@@ -4,7 +4,7 @@
 // (Project Settings -> API). Vedi database/schema.sql per creare le tabelle.
 // ============================================================
 const SUPABASE_URL = "https://evzrfzcimrxauldwfzbo.supabase.co/";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2enJmemNpbXJ4YXVsZHdmemJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODY4MTgsImV4cCI6MjEwNjc2MjgxOH0.zogAru6bZuFAuGJjUK-Ftm-spEBDNv-DeyB8CkkjCPk";
+const SUPABASE_ANON_KEY = "sb_publishable_h33DimihNlpZHBAp9CB0zQ_uWZBUWm8";
 
 // Inizializzazione globale del client
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
