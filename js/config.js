@@ -3,7 +3,7 @@
 // Sostituisci questi due valori con quelli del tuo progetto Supabase
 // (Project Settings -> API). Vedi database/schema.sql per creare le tabelle.
 // ============================================================
-const SUPABASE_URL = "https://evzrfzcimrxauldwfzbo.supabase.co/";
+const SUPABASE_URL = "https://evzrfzcimrxauldwfzbo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_h33DimihNlpZHBAp9CB0zQ_uWZBUWm8";
 
 // Inizializzazione globale del client
