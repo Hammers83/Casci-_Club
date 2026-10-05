@@ -3,8 +3,8 @@
 // Sostituisci questi due valori con quelli del tuo progetto Supabase
 // (Project Settings -> API). Vedi database/schema.sql per creare le tabelle.
 // ============================================================
-const SUPABASE_URL = "https://TUO-PROGETTO.supabase.co";
-const SUPABASE_ANON_KEY = "TUA_CHIAVE_ANON_PUBBLICA";
+const SUPABASE_URL = "https://evzrfzcimrxauldwfzbo.supabase.co/";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2enJmemNpbXJ4YXVsZHdmemJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODY4MTgsImV4cCI6MjEwNjc2MjgxOH0.zogAru6bZuFAuGJjUK-Ftm-spEBDNv-DeyB8CkkjCPk";
 
 // Inizializzazione globale del client
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
